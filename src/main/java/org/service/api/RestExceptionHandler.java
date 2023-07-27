@@ -53,7 +53,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseInfo res = new ResponseInfo();
         eRes.setResponseInfo(res);
         eRes.addErrorsItem(err);
-        return new ResponseEntity<Object>(eRes,HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<Object>(eRes,HttpStatus.INTERNAL_SERVER_ERROR) ;
        // return super.handleExceptionInternal(ex, eRes, headers, status, request);
     }
 
