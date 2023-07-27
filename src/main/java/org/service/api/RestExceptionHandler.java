@@ -1,5 +1,8 @@
 package org.service.api;
 
+import org.postgresql.util.PSQLException;
+import org.service.exceptions.CustomException;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +16,14 @@ import org.service.model.ErrorRes;
 import org.service.model.Error;
 import org.service.model.ResponseInfo;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 
 
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value= { IllegalArgumentException.class, IllegalStateException.class })
+    @ExceptionHandler(value= { IllegalArgumentException.class, IllegalStateException.class} )
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ErrorRes eRes = new ErrorRes();
@@ -39,5 +44,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, eRes, headers, status, request);
     }
 
+    @ExceptionHandler(CustomException.class)
+    protected ResponseEntity<Object> handleRuntimeException(CustomException ex, WebRequest request) {
+        ErrorRes eRes = new ErrorRes();
+        Error err = new Error();
+        err.setCode(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        err.setMessage(ex.getMessage());
+        ResponseInfo res = new ResponseInfo();
+        eRes.setResponseInfo(res);
+        eRes.addErrorsItem(err);
+        return new ResponseEntity<Object>(eRes,HttpStatus.INTERNAL_SERVER_ERROR);
+       // return super.handleExceptionInternal(ex, eRes, headers, status, request);
+    }
 
 }

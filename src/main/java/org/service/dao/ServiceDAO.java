@@ -2,6 +2,7 @@ package org.service.dao;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.postgresql.util.PGobject;
+import org.service.exceptions.CustomException;
 import org.service.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -82,7 +83,7 @@ public class ServiceDAO {
 
             return service;
         } catch (Exception exception) {
-            throw new RuntimeException(exception);
+            throw new CustomException(exception);
         }
     }
 
